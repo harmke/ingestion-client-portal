@@ -8,7 +8,7 @@ interface Container {
 }
 
 function App() {
-  const [containers, setContainers] = useState([] as Container[]);
+  const [containers, setContainers] = useState<Array<Container>>([]);
 
   const blobServiceClientRef = useRef(
     new BlobServiceClient(process.env.REACT_APP_BLOB_SERVICE_SAS as string)
