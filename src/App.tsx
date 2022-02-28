@@ -29,11 +29,36 @@ function App() {
   const [containers, setContainers] = useState<Array<Container>>([]);
   const [blobs, setBlobs] = useState<Array<Blob>>([]);
   const [groups, setGroups] = useState<Array<IGroup>>([]);
+
   const [audioUrl, setAudioUrl] = useState("");
 
   const blobServiceClientRef = useRef(
     new BlobServiceClient(process.env.REACT_APP_BLOB_SERVICE_SAS as string)
   );
+  const jsonResultOutputContainerClientRef = useRef(
+    blobServiceClientRef.current.getContainerClient("json-result-output")
+  );
+  function getJsonData<T = any>(url: string): Promise<T> {
+    return fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        return Promise.reject(error);
+      });
+  }
+
+  const getJsonResultOutput = async (audioFileName: string) => {
+    const blobClient = jsonResultOutputContainerClientRef.current.getBlobClient(
+      `${audioFileName}.json`
+    );
+    return await getJsonData(blobClient.url);
+  };
 
   const fetchBlobs = async () => {
     const newContainers = [];
@@ -53,6 +78,8 @@ function App() {
 
       let blobCount = 0;
       for await (const blob of containerClient.listBlobsFlat()) {
+        if (!blob.name.endsWith(".wav")) continue;
+
         newBlobs.push({
           name: blob.name,
           blobClient: containerClient.getBlobClient(blob.name),
@@ -108,8 +135,9 @@ function App() {
 
   const storageSasToken = process.env.REACT_APP_STORAGE_SAS_TOKEN;
 
-  const handleActiveItemChanged = (item: Blob) => {
+  const handleActiveItemChanged = async (item: Blob) => {
     setAudioUrl(item.blobClient.url);
+    console.log(await getJsonResultOutput(item.name));
   };
 
   return (
