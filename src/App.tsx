@@ -13,6 +13,7 @@ import {
   StackItem,
 } from "@fluentui/react";
 import AudioPlayer from "./components/AudioPlayer";
+import { generateTranscript, Transcript } from "./utils/transcription";
 
 interface Container {
   name: string;
@@ -31,6 +32,7 @@ function App() {
   const [groups, setGroups] = useState<Array<IGroup>>([]);
 
   const [audioUrl, setAudioUrl] = useState("");
+  const [transcript, setTranscript] = useState<Transcript>([]);
 
   const blobServiceClientRef = useRef(
     new BlobServiceClient(process.env.REACT_APP_BLOB_SERVICE_SAS as string)
@@ -111,33 +113,31 @@ function App() {
     },
   ];
 
-  const createGroups = () => {
-    let groups = [];
-    let indexCount = 0;
-
-    for (const { name, size } of containers) {
-      groups.push({
-        key: `group${name}`,
-        name: name,
-        startIndex: indexCount,
-        count: size,
-        level: 0,
-      });
-      indexCount += size;
-    }
-
-    return groups;
-  };
-
   useEffect(() => {
+    const createGroups = () => {
+      let groups = [];
+      let indexCount = 0;
+
+      for (const { name, size } of containers) {
+        groups.push({
+          key: `group${name}`,
+          name: name,
+          startIndex: indexCount,
+          count: size,
+          level: 0,
+        });
+        indexCount += size;
+      }
+
+      return groups;
+    };
+
     setGroups(createGroups());
   }, [containers]);
 
-  const storageSasToken = process.env.REACT_APP_STORAGE_SAS_TOKEN;
-
   const handleActiveItemChanged = async (item: Blob) => {
     setAudioUrl(item.blobClient.url);
-    console.log(await getJsonResultOutput(item.name));
+    setTranscript(generateTranscript(await getJsonResultOutput(item.name)));
   };
 
   return (
@@ -155,7 +155,7 @@ function App() {
           />
         </StackItem>
         <StackItem>
-          <AudioPlayer src={audioUrl} />
+          <AudioPlayer src={audioUrl} transcript={transcript} />
         </StackItem>
       </Stack>
     </div>
