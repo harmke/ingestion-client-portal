@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Transcript } from "../utils/transcription";
+import { Phrase, Transcript } from "../utils/transcription";
 import TranscriptView from "./TranscriptView";
 
 interface AudioPlayerProps {
@@ -16,6 +16,13 @@ function AudioPlayer({ src, transcript }: AudioPlayerProps) {
     setCurrentSeconds(audioRef.current.currentTime);
   };
 
+  const handleSetTime = (segment: Phrase) => {
+    if (!audioRef.current) return;
+    const newTime = segment.offset / 1000;
+    setCurrentSeconds(newTime);
+    audioRef.current.currentTime = newTime;
+  };
+
   return (
     <div>
       <audio
@@ -29,7 +36,11 @@ function AudioPlayer({ src, transcript }: AudioPlayerProps) {
       >
         Your browser does not support the audio element
       </audio>
-      <TranscriptView transcript={transcript} currentSeconds={currentSeconds} />
+      <TranscriptView
+        transcript={transcript}
+        currentSeconds={currentSeconds}
+        onSetTime={handleSetTime}
+      />
     </div>
   );
 }

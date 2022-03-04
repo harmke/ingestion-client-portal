@@ -7,9 +7,14 @@ import {
 interface TranscriptProps {
   transcript: Transcript;
   currentSeconds: number;
+  onSetTime: (segment: Phrase) => void;
 }
 
-function TranscriptView({ transcript, currentSeconds }: TranscriptProps) {
+function TranscriptView({
+  transcript,
+  currentSeconds,
+  onSetTime,
+}: TranscriptProps) {
   const isActive = (segment: Phrase) => {
     // if (interaction.transcriptAudioURI === '') return '';
     const offsetSecs = segment.offset / 1000;
@@ -26,6 +31,11 @@ function TranscriptView({ transcript, currentSeconds }: TranscriptProps) {
           key={phrase.offset}
           style={{
             backgroundColor: isActive(phrase) && "yellow",
+            cursor: "pointer",
+            marginBottom: 20,
+          }}
+          onClick={() => {
+            onSetTime(phrase);
           }}
         >
           {convertMilliseconds(phrase.offset)} -{" "}

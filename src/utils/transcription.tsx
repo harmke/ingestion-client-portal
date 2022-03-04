@@ -2,11 +2,23 @@ export interface RecognizedPhrase {
   offsetInTicks: string;
   durationInTicks: string;
   recognitionStatus: string;
-  nBest: { display: string }[];
+  nBest: {
+    display: string;
+    words: {
+      word: string;
+      offsetInTicks: string;
+      durationInTicks: string;
+    }[];
+  }[];
 }
 
 export interface JsonResultOutput {
   recognizedPhrases: RecognizedPhrase[];
+}
+
+export interface Word {
+  word: string;
+  offset: number;
 }
 
 export interface Phrase {
