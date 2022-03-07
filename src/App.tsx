@@ -6,14 +6,22 @@ import {
 } from "@azure/storage-blob";
 import { useEffect, useRef, useState } from "react";
 import {
+  CheckboxVisibility,
   DetailsList,
+  DetailsRow,
   IColumn,
+  IconButton,
+  IDetailsListProps,
+  IDetailsRowStyles,
   IGroup,
-  Stack,
-  StackItem,
+  Panel,
 } from "@fluentui/react";
 import AudioPlayer from "./components/AudioPlayer";
 import { generateTranscript, Transcript } from "./utils/transcription";
+import { useBoolean } from "@fluentui/react-hooks";
+import { getTheme } from "@fluentui/react/lib/Styling";
+
+const theme = getTheme();
 
 interface Container {
   name: string;
@@ -23,6 +31,8 @@ interface Container {
 
 interface Blob {
   name: string;
+  createdOn: string | undefined;
+  duration: number | undefined;
   blobClient: BlobClient;
 }
 
@@ -40,6 +50,10 @@ function App() {
   const jsonResultOutputContainerClientRef = useRef(
     blobServiceClientRef.current.getContainerClient("json-result-output")
   );
+
+  const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] =
+    useBoolean(false);
+
   function getJsonData<T = any>(url: string): Promise<T> {
     return fetch(url, {
       headers: {
@@ -84,6 +98,8 @@ function App() {
 
         newBlobs.push({
           name: blob.name,
+          createdOn: blob.properties.createdOn?.toString(),
+          duration: blob.properties.contentLength,
           blobClient: containerClient.getBlobClient(blob.name),
         });
         blobCount++;
@@ -106,10 +122,48 @@ function App() {
 
   const columns: IColumn[] = [
     {
+      key: "playAudio",
+      fieldName: "playAudio",
+      minWidth: 32,
+      maxWidth: 32,
+      name: "Play Audio",
+      iconName: "Play",
+      isIconOnly: true,
+      headerClassName: "playIconHeaderCell",
+
+      onRender: function Render(item) {
+        return (
+          <IconButton
+            iconProps={{ iconName: "Play" }}
+            styles={{
+              iconHovered: {
+                fontWeight: 900,
+              },
+              icon: {
+                // fontWeight: item === selectedInteraction ? 900 : "normal",
+                fontWeight: "normal",
+              },
+            }}
+            onClick={() => {
+              showAudioPlayer(item);
+              // setSelectedInteraction(item);
+            }}
+          />
+        );
+      },
+    },
+    {
       key: "column1",
-      name: "Name",
-      minWidth: 16,
+      name: "File Name",
+      minWidth: 200,
+      maxWidth: 400,
       fieldName: "name",
+    },
+    {
+      key: "column2",
+      name: "Creation Date",
+      minWidth: 16,
+      fieldName: "createdOn",
     },
   ];
 
@@ -135,29 +189,49 @@ function App() {
     setGroups(createGroups());
   }, [containers]);
 
-  const handleActiveItemChanged = async (item: Blob) => {
+  const showAudioPlayer = async (item: Blob) => {
     setAudioUrl(item.blobClient.url);
     setTranscript(generateTranscript(await getJsonResultOutput(item.name)));
+    openPanel();
+  };
+
+  const handleRenderRow: IDetailsListProps["onRenderRow"] = (props) => {
+    const customStyles: Partial<IDetailsRowStyles> = {};
+    if (props) {
+      if (props.itemIndex % 2 === 0) {
+        // Every other row renders with a different background color
+        customStyles.root = { backgroundColor: theme.palette.themeLighterAlt };
+      }
+
+      return <DetailsRow {...props} styles={customStyles} />;
+    }
+    return null;
   };
 
   return (
     <div className="App">
-      <Stack horizontal>
-        <StackItem grow>
-          <DetailsList
-            items={blobs}
-            columns={columns}
-            groups={groups}
-            groupProps={{
-              showEmptyGroups: true,
-            }}
-            onActiveItemChanged={handleActiveItemChanged}
-          />
-        </StackItem>
-        <StackItem>
-          <AudioPlayer src={audioUrl} transcript={transcript} />
-        </StackItem>
-      </Stack>
+      <DetailsList
+        compact
+        checkboxVisibility={CheckboxVisibility.hidden}
+        // disableSelectionZone
+        items={blobs}
+        columns={columns}
+        // groups={groups}
+        groupProps={{
+          showEmptyGroups: true,
+        }}
+        onRenderRow={handleRenderRow}
+      />
+
+      <Panel
+        isLightDismiss
+        isOpen={isOpen}
+        onDismiss={dismissPanel}
+        closeButtonAriaLabel="Close"
+        headerText="Audio Player"
+      >
+        <AudioPlayer src={audioUrl} transcript={transcript} />
+      </Panel>
     </div>
   );
 }
