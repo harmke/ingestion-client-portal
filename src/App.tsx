@@ -5,17 +5,7 @@ import {
   ContainerClient,
 } from "@azure/storage-blob";
 import { useEffect, useRef, useState } from "react";
-import {
-  CheckboxVisibility,
-  DetailsList,
-  DetailsRow,
-  IColumn,
-  IconButton,
-  IDetailsListProps,
-  IDetailsRowStyles,
-  IGroup,
-  Panel,
-} from "@fluentui/react";
+import { IGroup, Panel } from "@fluentui/react";
 import AudioPlayer from "./components/AudioPlayer";
 import {
   convertMilliseconds,
@@ -23,11 +13,9 @@ import {
   Transcript,
 } from "./utils/transcription";
 import { useBoolean } from "@fluentui/react-hooks";
-import { getTheme } from "@fluentui/react/lib/Styling";
 
 import getBlobDuration from "get-blob-duration";
-
-const theme = getTheme();
+import FilesExplorer from "./components/FilesExplorer";
 
 interface Container {
   name: string;
@@ -35,7 +23,7 @@ interface Container {
   size: number;
 }
 
-interface Blob {
+export interface Blob {
   name: string;
   createdOn: string | undefined;
   duration: string;
@@ -130,61 +118,6 @@ function App() {
     fetchBlobs();
   }, []);
 
-  const columns: IColumn[] = [
-    {
-      key: "playAudio",
-      fieldName: "playAudio",
-      minWidth: 32,
-      maxWidth: 32,
-      name: "Play Audio",
-      iconName: "Play",
-      isIconOnly: true,
-      headerClassName: "playIconHeaderCell",
-
-      onRender: function Render(item) {
-        return (
-          <IconButton
-            iconProps={{ iconName: "Play" }}
-            styles={{
-              iconHovered: {
-                fontWeight: 900,
-              },
-              icon: {
-                // fontWeight: item === selectedInteraction ? 900 : "normal",
-                fontWeight: "normal",
-              },
-            }}
-            onClick={() => {
-              showAudioPlayer(item);
-              // setSelectedInteraction(item);
-            }}
-          />
-        );
-      },
-    },
-    {
-      key: "column1",
-      name: "File Name",
-      minWidth: 200,
-      maxWidth: 400,
-      fieldName: "name",
-    },
-    {
-      key: "column2",
-      name: "Creation Date",
-      minWidth: 200,
-      maxWidth: 400,
-      fieldName: "createdOn",
-    },
-    {
-      key: "column1",
-      name: "Duration",
-      minWidth: 200,
-      maxWidth: 400,
-      fieldName: "duration",
-    },
-  ];
-
   useEffect(() => {
     const createGroups = () => {
       let groups = [];
@@ -213,34 +146,9 @@ function App() {
     openPanel();
   };
 
-  const handleRenderRow: IDetailsListProps["onRenderRow"] = (props) => {
-    const customStyles: Partial<IDetailsRowStyles> = {};
-    if (props) {
-      if (props.itemIndex % 2 === 0) {
-        // Every other row renders with a different background color
-        customStyles.root = { backgroundColor: theme.palette.themeLighterAlt };
-      }
-
-      return <DetailsRow {...props} styles={customStyles} />;
-    }
-    return null;
-  };
-
   return (
     <div className="App">
-      <DetailsList
-        compact
-        checkboxVisibility={CheckboxVisibility.hidden}
-        // disableSelectionZone
-        items={blobs}
-        columns={columns}
-        // groups={groups}
-        groupProps={{
-          showEmptyGroups: true,
-        }}
-        onRenderRow={handleRenderRow}
-      />
-
+      <FilesExplorer showAudioPlayer={showAudioPlayer} blobs={blobs} />
       <Panel
         isLightDismiss
         isOpen={isOpen}
