@@ -17,9 +17,15 @@ import {
   Panel,
 } from "@fluentui/react";
 import AudioPlayer from "./components/AudioPlayer";
-import { generateTranscript, Transcript } from "./utils/transcription";
+import {
+  convertMilliseconds,
+  generateTranscript,
+  Transcript,
+} from "./utils/transcription";
 import { useBoolean } from "@fluentui/react-hooks";
 import { getTheme } from "@fluentui/react/lib/Styling";
+
+import getBlobDuration from "get-blob-duration";
 
 const theme = getTheme();
 
@@ -32,7 +38,7 @@ interface Container {
 interface Blob {
   name: string;
   createdOn: string | undefined;
-  duration: number | undefined;
+  duration: string;
   blobClient: BlobClient;
 }
 
@@ -96,11 +102,15 @@ function App() {
       for await (const blob of containerClient.listBlobsFlat()) {
         if (!blob.name.endsWith(".wav")) continue;
 
+        const blobClient = containerClient.getBlobClient(blob.name);
+
         newBlobs.push({
           name: blob.name,
           createdOn: blob.properties.createdOn?.toString(),
-          duration: blob.properties.contentLength,
-          blobClient: containerClient.getBlobClient(blob.name),
+          duration: convertMilliseconds(
+            (await getBlobDuration(blobClient.url)) * 1000
+          ),
+          blobClient: blobClient,
         });
         blobCount++;
       }
@@ -162,8 +172,16 @@ function App() {
     {
       key: "column2",
       name: "Creation Date",
-      minWidth: 16,
+      minWidth: 200,
+      maxWidth: 400,
       fieldName: "createdOn",
+    },
+    {
+      key: "column1",
+      name: "Duration",
+      minWidth: 200,
+      maxWidth: 400,
+      fieldName: "duration",
     },
   ];
 
