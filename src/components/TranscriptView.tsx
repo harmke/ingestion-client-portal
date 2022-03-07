@@ -1,8 +1,10 @@
+import { getTheme } from "@fluentui/react";
 import {
   convertMilliseconds,
   Phrase,
   Transcript,
 } from "../utils/transcription";
+import "styles/TranscriptView.css";
 
 interface TranscriptProps {
   transcript: Transcript;
@@ -15,6 +17,8 @@ function TranscriptView({
   currentSeconds,
   onSetTime,
 }: TranscriptProps) {
+  const theme = getTheme();
+
   const isActive = (segment: Phrase) => {
     // if (interaction.transcriptAudioURI === '') return '';
     const offsetSecs = segment.offset / 1000;
@@ -30,18 +34,18 @@ function TranscriptView({
         <div
           key={phrase.offset}
           style={{
-            backgroundColor: isActive(phrase) && "yellow",
-            cursor: "pointer",
-            marginBottom: 20,
+            backgroundColor: isActive(phrase) && theme.palette.themeLighterAlt,
           }}
           onClick={() => {
             onSetTime(phrase);
           }}
+          className="TranscriptViewSegmentContainer"
         >
-          {convertMilliseconds(phrase.offset)} -{" "}
-          {convertMilliseconds(phrase.offset + phrase.duration)} -{" "}
+          <div className="TranscriptViewSegmentTimestamp">
+            {convertMilliseconds(phrase.offset)} -{" "}
+            {convertMilliseconds(phrase.offset + phrase.duration)}
+          </div>
           {phrase.phrase}
-          <br />
         </div>
       ))}
     </div>

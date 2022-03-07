@@ -1,0 +1,9 @@
+.TranscriptViewSegmentContainer {
+  padding: 20px 5px;
+  cursor: pointer;
+  border-top: 1px solid lightgray;
+}
+
+.TranscriptViewSegmentTimestamp {
+  color: gray;
+}

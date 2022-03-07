@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
-import { Phrase, Transcript } from "../utils/transcription";
+import { Phrase, Transcript } from "utils/transcription";
 import TranscriptView from "./TranscriptView";
+import "styles/AudioPlayer.css";
 
 interface AudioPlayerProps {
   src: string;
@@ -33,6 +34,7 @@ function AudioPlayer({ src, transcript }: AudioPlayerProps) {
         onContextMenu={(e) => e.preventDefault()}
         onTimeUpdate={handleTimeUpdate}
         src={src}
+        className="AudioPlayerAudioElement"
       >
         Your browser does not support the audio element
       </audio>
