@@ -65,7 +65,7 @@ function FilesExplorer({ showAudioPlayer, blobs }: FilesExplorerProps) {
       fieldName: "createdOn",
     },
     {
-      key: "column1",
+      key: "column3",
       name: "Duration",
       minWidth: 200,
       maxWidth: 400,
