@@ -4,11 +4,13 @@ import {
   DetailsRow,
   getTheme,
   IColumn,
+  Icon,
   IconButton,
   IDetailsListProps,
   IDetailsRowStyles,
 } from "@fluentui/react";
-import { Blob } from "../App";
+import { Blob } from "./App";
+import "styles/FilesExplorer.css";
 
 interface FilesExplorerProps {
   showAudioPlayer: (item: Blob) => void;
@@ -20,14 +22,14 @@ function FilesExplorer({ showAudioPlayer, blobs }: FilesExplorerProps) {
 
   const columns: IColumn[] = [
     {
-      key: "playAudio",
+      key: "playAudioIcon",
       fieldName: "playAudio",
       minWidth: 32,
       maxWidth: 32,
       name: "Play Audio",
       iconName: "Play",
       isIconOnly: true,
-      headerClassName: "playIconHeaderCell",
+      headerClassName: "IconHeaderCell",
 
       onRender: function Render(item: Blob) {
         return (
@@ -47,6 +49,25 @@ function FilesExplorer({ showAudioPlayer, blobs }: FilesExplorerProps) {
               // setSelectedInteraction(item);
             }}
           />
+        );
+      },
+    },
+    {
+      key: "mediaIcon",
+      fieldName: "mediaIcon",
+      minWidth: 32,
+      maxWidth: 32,
+      name: "File Types",
+      iconName: "Media",
+      isIconOnly: true,
+      headerClassName: "IconHeaderCell",
+
+      onRender: function Render(item: Blob) {
+        return (
+          <>
+            <Icon iconName="Volume3" />
+            <Icon iconName="TextDocument" />
+          </>
         );
       },
     },
@@ -89,7 +110,6 @@ function FilesExplorer({ showAudioPlayer, blobs }: FilesExplorerProps) {
     <DetailsList
       compact
       checkboxVisibility={CheckboxVisibility.hidden}
-      // disableSelectionZone
       items={blobs}
       columns={columns}
       // groups={groups}

@@ -1,4 +1,4 @@
-import "./App.css";
+import "styles/App.css";
 import {
   BlobClient,
   BlobServiceClient,
@@ -6,16 +6,16 @@ import {
 } from "@azure/storage-blob";
 import { useEffect, useRef, useState } from "react";
 import { IGroup, Panel } from "@fluentui/react";
-import AudioPlayer from "./components/AudioPlayer";
+import AudioPlayer from "./AudioPlayer";
 import {
   convertMilliseconds,
   generateTranscript,
   Transcript,
-} from "./utils/transcription";
+} from "../utils/transcription";
 import { useBoolean } from "@fluentui/react-hooks";
 
 import getBlobDuration from "get-blob-duration";
-import FilesExplorer from "./components/FilesExplorer";
+import FilesExplorer from "./FilesExplorer";
 
 interface Container {
   name: string;
