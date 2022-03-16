@@ -17,6 +17,8 @@ import { useBoolean } from "@fluentui/react-hooks";
 import getBlobDuration from "get-blob-duration";
 import FilesExplorer from "./FilesExplorer";
 import NavBar from "./NavBar";
+import FilterBar from "./FilterBar";
+import OptionsBar from "./OptionsBar";
 
 interface Container {
   name: string;
@@ -150,6 +152,8 @@ function App() {
   return (
     <div className="App">
       <NavBar />
+      <OptionsBar />
+      <FilterBar />
       <FilesExplorer showAudioPlayer={showAudioPlayer} blobs={blobs} />
       <Panel
         isLightDismiss
