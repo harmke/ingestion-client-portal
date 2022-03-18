@@ -16,16 +16,17 @@ export interface JsonResultOutput {
   recognizedPhrases: RecognizedPhrase[];
 }
 
-export interface Word {
-  word: string;
-  offset: number;
-}
-
-export interface Phrase {
+export interface Segment {
+  text: string;
   offset: number;
   duration: number;
+}
+
+export interface Word extends Segment {}
+
+export interface Phrase extends Segment {
   recognitionStatus: string;
-  phrase: string;
+  words: Word[];
 }
 
 export interface Transcript extends Array<Phrase> {}
@@ -46,7 +47,14 @@ export function generateTranscript(
       offset: parseInt(offsetInTicks) / 10000,
       duration: parseInt(durationInTicks) / 10000,
       recognitionStatus,
-      phrase: nBest[0]?.display,
+      text: nBest[0]?.display,
+      words: nBest[0]?.words.map(
+        ({ word, durationInTicks, offsetInTicks }) => ({
+          text: word,
+          duration: parseInt(durationInTicks) / 10000,
+          offset: parseInt(offsetInTicks) / 10000,
+        })
+      ),
     })
   );
   return unsorted.sort((a, b) => a.offset - b.offset);

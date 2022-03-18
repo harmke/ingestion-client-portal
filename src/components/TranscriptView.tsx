@@ -2,6 +2,7 @@ import { getTheme } from "@fluentui/react";
 import {
   convertMilliseconds,
   Phrase,
+  Segment,
   Transcript,
 } from "../utils/transcription";
 import "styles/TranscriptView.css";
@@ -9,7 +10,7 @@ import "styles/TranscriptView.css";
 interface TranscriptProps {
   transcript: Transcript;
   currentSeconds: number;
-  onSetTime: (segment: Phrase) => void;
+  onSetTime: (segment: Segment) => void;
 }
 
 function TranscriptView({
@@ -19,13 +20,11 @@ function TranscriptView({
 }: TranscriptProps) {
   const theme = getTheme();
 
-  const isActive = (segment: Phrase) => {
+  const isActive = (segment: Segment) => {
     // if (interaction.transcriptAudioURI === '') return '';
     const offsetSecs = segment.offset / 1000;
     const endSecs = offsetSecs + segment.duration / 1000;
-    return currentSeconds >= offsetSecs && currentSeconds < endSecs
-      ? " active"
-      : "";
+    return currentSeconds >= offsetSecs && currentSeconds < endSecs;
   };
 
   return (
@@ -34,7 +33,9 @@ function TranscriptView({
         <div
           key={phrase.offset}
           style={{
-            backgroundColor: isActive(phrase) && theme.palette.themeLighterAlt,
+            backgroundColor: isActive(phrase)
+              ? theme.palette.themeLighterAlt
+              : undefined,
           }}
           onClick={() => {
             onSetTime(phrase);
@@ -45,7 +46,23 @@ function TranscriptView({
             {convertMilliseconds(phrase.offset)} -{" "}
             {convertMilliseconds(phrase.offset + phrase.duration)}
           </div>
-          {phrase.phrase}
+          {/* {phrase.text} */}
+          <div>
+            {phrase.words.map((word) => (
+              <span
+                className="TranscriptView__Word"
+                style={{
+                  textDecoration: isActive(word) ? "underline" : undefined,
+                }}
+                onClick={(event) => {
+                  onSetTime(word);
+                  event.stopPropagation();
+                }}
+              >
+                {word.text}{" "}
+              </span>
+            ))}
+          </div>
         </div>
       ))}
     </div>

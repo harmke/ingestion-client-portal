@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Phrase, Transcript } from "utils/transcription";
+import { Segment, Transcript } from "utils/transcription";
 import TranscriptView from "./TranscriptView";
 import "styles/AudioPlayer.css";
 
@@ -17,7 +17,7 @@ function AudioPlayer({ src, transcript }: AudioPlayerProps) {
     setCurrentSeconds(audioRef.current.currentTime);
   };
 
-  const handleSetTime = (segment: Phrase) => {
+  const handleSetTime = (segment: Segment) => {
     if (!audioRef.current) return;
     const newTime = segment.offset / 1000;
     setCurrentSeconds(newTime);

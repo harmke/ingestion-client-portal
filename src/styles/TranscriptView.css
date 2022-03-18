@@ -5,5 +5,9 @@
 }
 
 .TranscriptViewSegmentTimestamp {
-  color: gray;
+  color: grey;
+}
+
+.TranscriptView__Word:hover {
+  background-color: lightgrey;
 }
