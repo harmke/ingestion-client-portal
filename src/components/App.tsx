@@ -98,7 +98,8 @@ function App() {
 
       let blobCount = 0;
       for await (const blob of containerClient.listBlobsFlat()) {
-        if (!blob.name.endsWith(".wav")) continue;
+        if (![".wav", ".mp3"].some((suffix) => blob.name.endsWith(suffix)))
+          continue;
 
         const blobClient = containerClient.getBlobClient(blob.name);
 
