@@ -41,7 +41,7 @@ export const convertMilliseconds = (milli: number) => {
 export function generateTranscript(
   jsonResultOutput: JsonResultOutput
 ): Transcript {
-  return jsonResultOutput.recognizedPhrases.map(
+  const unsorted = jsonResultOutput.recognizedPhrases.map(
     ({ offsetInTicks, durationInTicks, recognitionStatus, nBest }) => ({
       offset: parseInt(offsetInTicks) / 10000,
       duration: parseInt(durationInTicks) / 10000,
@@ -49,4 +49,5 @@ export function generateTranscript(
       phrase: nBest[0]?.display,
     })
   );
+  return unsorted.sort((a, b) => a.offset - b.offset);
 }
