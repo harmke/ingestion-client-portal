@@ -31,7 +31,7 @@ function TranscriptView({
     <div>
       {transcript.map((phrase) => (
         <div
-          key={phrase.offset}
+          key={`${phrase.offset}-${phrase.text}`}
           style={{
             backgroundColor: isActive(phrase)
               ? theme.palette.themeLighterAlt
@@ -50,6 +50,7 @@ function TranscriptView({
           <div>
             {phrase.words.map((word) => (
               <span
+                key={`${word.offset}-${word.text}`}
                 className="TranscriptView__Word"
                 style={{
                   textDecoration: isActive(word) ? "underline" : undefined,
