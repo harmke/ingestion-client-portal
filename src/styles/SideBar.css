@@ -1,0 +1,34 @@
+.SideBar {
+  width: 240px;
+  height: 100vh;
+  border-right: 1px solid lightgrey;
+  background-color: #f2f6f9;
+}
+
+.SideBar__Title {
+  font-weight: 600;
+  font-size: 16px;
+  color: rgb(50, 49, 48);
+  line-height: 40px;
+  height: 40px;
+  padding-left: 8px;
+  border-bottom: 1px solid lightgrey;
+}
+
+.SideBar__SearchBar {
+  padding: 5px;
+  border-bottom: 1px solid lightgrey;
+}
+
+.SideBar__QueryTitle {
+  /* vertical-align: middle; */
+  display: flex;
+  align-items: center;
+  padding-left: 8px;
+  padding-top: 8px;
+  font-weight: 600;
+}
+
+.SideBar__QueryIcon {
+  margin-right: 8px;
+}
