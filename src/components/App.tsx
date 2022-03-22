@@ -20,6 +20,8 @@ import NavBar from "./NavBar";
 import FilterBar from "./FilterBar";
 import OptionsBar from "./OptionsBar";
 import SideBar from "./SideBar";
+import ConnectionStringBar from "./ConnectionStringBar";
+import { getJsonData } from "utils/blobData";
 
 interface Container {
   name: string;
@@ -42,30 +44,17 @@ function App() {
   const [audioUrl, setAudioUrl] = useState("");
   const [transcript, setTranscript] = useState<Transcript>([]);
 
-  const blobServiceClientRef = useRef(
-    new BlobServiceClient(process.env.REACT_APP_BLOB_SERVICE_SAS as string)
+  const [blobServiceSas, setBlobServiceSas] = useState<string>(
+    (process.env.REACT_APP_BLOB_SERVICE_SAS as string) || ""
   );
+
+  const blobServiceClientRef = useRef(new BlobServiceClient(blobServiceSas));
   const jsonResultOutputContainerClientRef = useRef(
     blobServiceClientRef.current.getContainerClient("json-result-output")
   );
 
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] =
     useBoolean(false);
-
-  function getJsonData<T = any>(url: string): Promise<T> {
-    return fetch(url, {
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        return Promise.reject(error);
-      });
-  }
 
   const getJsonResultOutput = async (audioFileName: string) => {
     const blobClient = jsonResultOutputContainerClientRef.current.getBlobClient(
@@ -120,8 +109,11 @@ function App() {
   };
 
   useEffect(() => {
+    blobServiceClientRef.current = new BlobServiceClient(blobServiceSas);
+    jsonResultOutputContainerClientRef.current =
+      blobServiceClientRef.current.getContainerClient("json-result-output");
     fetchBlobs();
-  }, []);
+  }, [blobServiceSas]);
 
   useEffect(() => {
     const createGroups = () => {
@@ -159,6 +151,10 @@ function App() {
           <SideBar />
         </Stack.Item>
         <Stack.Item grow>
+          <ConnectionStringBar
+            blobServiceSas={blobServiceSas}
+            onConnect={setBlobServiceSas}
+          />
           <OptionsBar />
           <FilterBar />
 
