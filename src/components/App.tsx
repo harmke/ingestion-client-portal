@@ -1,40 +1,18 @@
 import "styles/App.css";
-import {
-  BlobClient,
-  BlobServiceClient,
-  ContainerClient,
-} from "@azure/storage-blob";
+import { BlobServiceClient } from "@azure/storage-blob";
 import { useEffect, useRef, useState } from "react";
 import { IGroup, Panel, Stack } from "@fluentui/react";
 import AudioPlayer from "./AudioPlayer";
-import {
-  convertMilliseconds,
-  generateTranscript,
-  Transcript,
-} from "../utils/transcription";
+import { generateTranscript, Transcript } from "../utils/transcription";
 import { useBoolean } from "@fluentui/react-hooks";
 
-import getBlobDuration from "get-blob-duration";
 import FilesExplorer from "./FilesExplorer";
 import NavBar from "./NavBar";
 import FilterBar from "./FilterBar";
 import OptionsBar from "./OptionsBar";
 import SideBar from "./SideBar";
 import ConnectionStringBar from "./ConnectionStringBar";
-import { getJsonData } from "utils/blobData";
-
-interface Container {
-  name: string;
-  containerClient: ContainerClient;
-  size: number;
-}
-
-export interface Blob {
-  name: string;
-  createdOn: string | undefined;
-  duration: string;
-  blobClient: BlobClient;
-}
+import { Blob, Container, fetchAudioBlobs, getJsonData } from "utils/blobData";
 
 function App() {
   const [containers, setContainers] = useState<Array<Container>>([]);
@@ -63,56 +41,20 @@ function App() {
     return await getJsonData(blobClient.url);
   };
 
-  const fetchBlobs = async () => {
-    const newContainers = [];
-    const newBlobs = [];
-    for await (const container of blobServiceClientRef.current.listContainers({
-      prefix: "audio",
-    })) {
-      // if (
-      //   !["audio", "json"].some((prefix) => container.name.startsWith(prefix))
-      // ) {
-      //   continue;
-      // }
-
-      const containerClient = blobServiceClientRef.current.getContainerClient(
-        container.name
-      );
-
-      let blobCount = 0;
-      for await (const blob of containerClient.listBlobsFlat()) {
-        if (![".wav", ".mp3"].some((suffix) => blob.name.endsWith(suffix)))
-          continue;
-
-        const blobClient = containerClient.getBlobClient(blob.name);
-
-        newBlobs.push({
-          name: blob.name,
-          createdOn: blob.properties.createdOn?.toString(),
-          duration: convertMilliseconds(
-            (await getBlobDuration(blobClient.url)) * 1000
-          ),
-          blobClient: blobClient,
-        });
-        blobCount++;
-      }
-
-      newContainers.push({
-        name: container.name,
-        containerClient: containerClient,
-        size: blobCount,
-      });
-    }
-
-    setBlobs(newBlobs);
-    setContainers(newContainers);
-  };
-
   useEffect(() => {
     blobServiceClientRef.current = new BlobServiceClient(blobServiceSas);
     jsonResultOutputContainerClientRef.current =
       blobServiceClientRef.current.getContainerClient("json-result-output");
-    fetchBlobs();
+
+    const setAudioBlobs = async () => {
+      const [newBlobs, newContainers] = await fetchAudioBlobs(
+        blobServiceClientRef.current
+      );
+
+      setBlobs(newBlobs);
+      setContainers(newContainers);
+    };
+    setAudioBlobs();
   }, [blobServiceSas]);
 
   useEffect(() => {

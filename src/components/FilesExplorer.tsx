@@ -9,8 +9,8 @@ import {
   IDetailsListProps,
   IDetailsRowStyles,
 } from "@fluentui/react";
-import { Blob } from "./App";
 import "styles/FilesExplorer.css";
+import { Blob } from "utils/blobData";
 
 interface FilesExplorerProps {
   showAudioPlayer: (item: Blob) => void;
