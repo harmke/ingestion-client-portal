@@ -2,13 +2,19 @@ import { useRef, useState } from "react";
 import { Segment, Transcript } from "utils/transcription";
 import TranscriptView from "./TranscriptView";
 import "styles/AudioPlayer.css";
+import { LoadingStatus } from "./App";
 
 interface AudioPlayerProps {
   src: string;
   transcript: Transcript;
+  transcriptLoadingStatus: LoadingStatus;
 }
 
-function AudioPlayer({ src, transcript }: AudioPlayerProps) {
+function AudioPlayer({
+  src,
+  transcript,
+  transcriptLoadingStatus,
+}: AudioPlayerProps) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [currentSeconds, setCurrentSeconds] = useState(0);
 
@@ -29,7 +35,7 @@ function AudioPlayer({ src, transcript }: AudioPlayerProps) {
       <audio
         ref={audioRef}
         controls
-        autoPlay
+        autoPlay={transcriptLoadingStatus === "successful"}
         controlsList="nodownload"
         onContextMenu={(e) => e.preventDefault()}
         onTimeUpdate={handleTimeUpdate}
@@ -40,6 +46,7 @@ function AudioPlayer({ src, transcript }: AudioPlayerProps) {
       </audio>
       <TranscriptView
         transcript={transcript}
+        loadingStatus={transcriptLoadingStatus}
         currentSeconds={currentSeconds}
         onSetTime={handleSetTime}
       />

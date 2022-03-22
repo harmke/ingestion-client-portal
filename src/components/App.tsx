@@ -25,6 +25,8 @@ function App() {
 
   const [audioUrl, setAudioUrl] = useState("");
   const [transcript, setTranscript] = useState<Transcript>([]);
+  const [transcriptLoadingStatus, setTranscriptLoadingStatus] =
+    useState<LoadingStatus>("loading");
 
   const [blobServiceSas, setBlobServiceSas] = useState<string>(
     (process.env.REACT_APP_BLOB_SERVICE_SAS as string) || ""
@@ -92,8 +94,10 @@ function App() {
   const showAudioPlayer = async (item: Blob) => {
     setAudioUrl(item.blobClient.url);
     setTranscript([]);
+    setTranscriptLoadingStatus("loading");
     openPanel();
     setTranscript(generateTranscript(await getJsonResultOutput(item.name)));
+    setTranscriptLoadingStatus("successful");
   };
 
   return (
@@ -123,7 +127,11 @@ function App() {
             closeButtonAriaLabel="Close"
             headerText="Audio Player"
           >
-            <AudioPlayer src={audioUrl} transcript={transcript} />
+            <AudioPlayer
+              src={audioUrl}
+              transcript={transcript}
+              transcriptLoadingStatus={transcriptLoadingStatus}
+            />
           </Panel>
         </Stack.Item>
       </Stack>

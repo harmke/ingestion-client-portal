@@ -1,6 +1,5 @@
 import {
   CheckboxVisibility,
-  DetailsList,
   DetailsRow,
   getTheme,
   IColumn,
