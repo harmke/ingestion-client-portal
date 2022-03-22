@@ -14,9 +14,13 @@ import SideBar from "./SideBar";
 import ConnectionStringBar from "./ConnectionStringBar";
 import { Blob, Container, fetchAudioBlobs, getJsonData } from "utils/blobData";
 
+export type LoadingStatus = "loading" | "successful" | "failed";
+
 function App() {
   const [containers, setContainers] = useState<Array<Container>>([]);
   const [blobs, setBlobs] = useState<Array<Blob>>([]);
+  const [blobsLoadingStatus, setBlobsLoadingStatus] =
+    useState<LoadingStatus>("loading");
   const [groups, setGroups] = useState<Array<IGroup>>([]);
 
   const [audioUrl, setAudioUrl] = useState("");
@@ -47,12 +51,18 @@ function App() {
       blobServiceClientRef.current.getContainerClient("json-result-output");
 
     const setAudioBlobs = async () => {
-      const [newBlobs, newContainers] = await fetchAudioBlobs(
-        blobServiceClientRef.current
-      );
+      setBlobsLoadingStatus("loading");
+      try {
+        const [newBlobs, newContainers] = await fetchAudioBlobs(
+          blobServiceClientRef.current
+        );
 
-      setBlobs(newBlobs);
-      setContainers(newContainers);
+        setBlobs(newBlobs);
+        setContainers(newContainers);
+        setBlobsLoadingStatus("successful");
+      } catch (e) {
+        setBlobsLoadingStatus("failed");
+      }
     };
     setAudioBlobs();
   }, [blobServiceSas]);
@@ -100,7 +110,11 @@ function App() {
           <OptionsBar />
           <FilterBar />
 
-          <FilesExplorer showAudioPlayer={showAudioPlayer} blobs={blobs} />
+          <FilesExplorer
+            showAudioPlayer={showAudioPlayer}
+            blobs={blobs}
+            loadingStatus={blobsLoadingStatus}
+          />
           <Panel
             isLightDismiss
             isOpen={isOpen}

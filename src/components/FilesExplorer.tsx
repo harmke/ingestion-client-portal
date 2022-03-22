@@ -8,16 +8,23 @@ import {
   IconButton,
   IDetailsListProps,
   IDetailsRowStyles,
+  ShimmeredDetailsList,
 } from "@fluentui/react";
 import "styles/FilesExplorer.css";
 import { Blob } from "utils/blobData";
+import { LoadingStatus } from "./App";
 
 interface FilesExplorerProps {
   showAudioPlayer: (item: Blob) => void;
   blobs: Blob[];
+  loadingStatus: LoadingStatus;
 }
 
-function FilesExplorer({ showAudioPlayer, blobs }: FilesExplorerProps) {
+function FilesExplorer({
+  showAudioPlayer,
+  blobs,
+  loadingStatus,
+}: FilesExplorerProps) {
   const theme = getTheme();
 
   const columns: IColumn[] = [
@@ -107,7 +114,8 @@ function FilesExplorer({ showAudioPlayer, blobs }: FilesExplorerProps) {
     return null;
   };
   return (
-    <DetailsList
+    <ShimmeredDetailsList
+      enableShimmer={loadingStatus === "loading"}
       compact
       checkboxVisibility={CheckboxVisibility.hidden}
       items={blobs}
