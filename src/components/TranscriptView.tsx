@@ -52,6 +52,9 @@ function TranscriptView({
             <div className="TranscriptViewSegmentTimestamp">
               {convertMilliseconds(phrase.offset)} -{" "}
               {convertMilliseconds(phrase.offset + phrase.duration)}
+              <span className="TranscriptViewSegment__SpeakerTag">
+                Speaker {phrase.channel}
+              </span>
             </div>
             {/* {phrase.text} */}
             <div>

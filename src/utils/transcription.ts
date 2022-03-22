@@ -2,6 +2,7 @@ export interface RecognizedPhrase {
   offsetInTicks: string;
   durationInTicks: string;
   recognitionStatus: string;
+  channel: number;
   nBest: {
     display: string;
     words: {
@@ -26,6 +27,7 @@ export interface Word extends Segment {}
 
 export interface Phrase extends Segment {
   recognitionStatus: string;
+  channel: number;
   words: Word[];
 }
 
@@ -43,11 +45,18 @@ export function generateTranscript(
   jsonResultOutput: JsonResultOutput
 ): Transcript {
   const unsorted = jsonResultOutput.recognizedPhrases.map(
-    ({ offsetInTicks, durationInTicks, recognitionStatus, nBest }) => ({
+    ({
+      offsetInTicks,
+      durationInTicks,
+      recognitionStatus,
+      nBest,
+      channel,
+    }) => ({
       offset: parseInt(offsetInTicks) / 10000,
       duration: parseInt(durationInTicks) / 10000,
       recognitionStatus,
       text: nBest[0]?.display,
+      channel,
       words: nBest[0]?.words.map(
         ({ word, durationInTicks, offsetInTicks }) => ({
           text: word,
