@@ -91,8 +91,9 @@ function App() {
 
   const showAudioPlayer = async (item: Blob) => {
     setAudioUrl(item.blobClient.url);
-    setTranscript(generateTranscript(await getJsonResultOutput(item.name)));
+    setTranscript([]);
     openPanel();
+    setTranscript(generateTranscript(await getJsonResultOutput(item.name)));
   };
 
   return (
