@@ -10,7 +10,7 @@ import FilesExplorer from "./FilesExplorer";
 import NavBar from "./NavBar";
 import FilterBar from "./FilterBar";
 import OptionsBar from "./OptionsBar";
-import SideBar from "./SideBar";
+import SideBar from "./SideBar/SideBar";
 import ConnectionStringBar from "./ConnectionStringBar";
 import { Blob, Container, fetchAudioBlobs, getJsonData } from "utils/blobData";
 
