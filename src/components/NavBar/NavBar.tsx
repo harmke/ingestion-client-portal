@@ -1,35 +1,36 @@
 import { IconButton, Persona } from "@fluentui/react";
-import "styles/NavBar.css";
 import logo from "IAP_logo_69x48.png";
+import { getClassNames } from "./NavBar.classNames";
 
 function NavBar() {
+  const classNames = getClassNames();
   return (
-    <div className="NavBar">
-      <div className="NavBar__Left">
-        <img className="NavBar__Logo" src={logo} alt="IAP logo" />
-        <div className="NavBar__Title">Ingestion Client Portal</div>
-        <div className="NavBar__TabName">Home</div>
-        <div className="NavBar__TabName">Query</div>
-        <div className="NavBar__TabName">Designer</div>
-        <div className="NavBar__TabName">Admin</div>
+    <div className={classNames.root}>
+      <div className={classNames.left}>
+        <img className={classNames.logo} src={logo} alt="IAP logo" />
+        <div className={classNames.title}>Ingestion Client Portal</div>
+        <div className={classNames.tabName}>Home</div>
+        <div className={classNames.tabName}>Query</div>
+        <div className={classNames.tabName}>Designer</div>
+        <div className={classNames.tabName}>Admin</div>
       </div>
-      <div className="NavBar__Right">
+      <div className={classNames.right}>
         <IconButton
-          className="NavBar__Icon"
+          className={classNames.icon}
           data-event-id="Refresh IAP data"
           iconProps={{ iconName: "Refresh" }}
           ariaLabel={"Refresh IAP data"}
           title="Refresh IAP data"
         />
         <IconButton
-          className="NavBar__Icon"
+          className={classNames.icon}
           data-event-id="Open Notifications Panel"
           iconProps={{ iconName: "Ringer" }}
           ariaLabel={"Notifications"}
           title="Open Notifications Panel"
         />
         <IconButton
-          className="NavBar__Icon"
+          className={classNames.icon}
           data-event-id="Open Page Help Panel"
           iconProps={{ iconName: "Help" }}
           title="Open Page Help Panel"

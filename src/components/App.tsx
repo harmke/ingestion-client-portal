@@ -7,7 +7,7 @@ import { generateTranscript, Transcript } from "../utils/transcription";
 import { useBoolean } from "@fluentui/react-hooks";
 
 import FilesExplorer from "./FilesExplorer";
-import NavBar from "./NavBar";
+import NavBar from "./NavBar/NavBar";
 import FilterBar from "./FilterBar";
 import OptionsBar from "./OptionsBar";
 import SideBar from "./SideBar/SideBar";
