@@ -1,4 +1,7 @@
 import { mergeStyleSets } from "@fluentui/merge-styles";
+import { FontWeights, getTheme } from "@fluentui/react";
+
+const theme = getTheme();
 
 export interface SideBarClassNames {
   root: string;
@@ -13,30 +16,31 @@ export const getClassNames = (): SideBarClassNames => {
     root: {
       width: "240px",
       height: "100vh",
-      borderRight: "1px solid lightgrey",
-      backgroundColor: "#f2f6f9",
+      borderRight: `1px solid ${theme.palette.neutralSecondary}`,
+      backgroundColor: theme.palette.neutralLighterAlt,
     },
 
     title: {
-      fontWeight: 600,
-      fontSize: "16px",
-      color: "#323130",
+      ...theme.fonts.mediumPlus,
+      fontWeight: FontWeights.semibold,
+      color: theme.palette.neutralPrimary,
       lineHeight: 40,
       height: 40,
       paddingLeft: 8,
-      borderBottom: "1px solid lightgrey",
+      borderBottom: `1px solid ${theme.palette.neutralTertiaryAlt}`,
     },
 
     searchBar: {
       padding: 5,
-      borderBottom: "1px solid lightgrey",
+      borderBottom: `1px solid ${theme.palette.neutralTertiaryAlt}`,
     },
     queryTitle: {
+      ...theme.fonts.medium,
       display: "flex",
       alignItems: "center",
       paddingLeft: 8,
       paddingTop: 8,
-      fontWeight: 600,
+      fontWeight: FontWeights.semibold,
     },
     queryIcon: {
       marginRight: 8,
