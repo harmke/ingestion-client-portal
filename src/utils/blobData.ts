@@ -52,43 +52,54 @@ const handleBlobClient = async (
 
 const handleContainerClient = async (
   containerName: string,
-  blobServiceClient: BlobServiceClient,
-  newContainers: Container[]
-) => {
+  blobServiceClient: BlobServiceClient
+): Promise<[Blob[], Container]> => {
   const containerClient = blobServiceClient.getContainerClient(containerName);
 
   const blobRequests = [];
-  for await (const blob of containerClient.listBlobsFlat()) {
-    if ([".wav", ".mp3"].some((suffix) => blob.name.endsWith(suffix)))
-      blobRequests.push(handleBlobClient(blob, containerClient));
+  for await (const response of containerClient
+    .listBlobsFlat()
+    .byPage({ maxPageSize: 2 })) {
+    console.log(response);
+    for await (const blob of response.segment.blobItems) {
+      if ([".wav", ".mp3"].some((suffix) => blob.name.endsWith(suffix)))
+        blobRequests.push(handleBlobClient(blob, containerClient));
+    }
   }
-
   const resolvedBlobRequests = await Promise.all(blobRequests);
 
-  newContainers.push({
+  const container: Container = {
     name: containerName,
     containerClient: containerClient,
     size: resolvedBlobRequests.length,
-  });
+  };
 
-  return resolvedBlobRequests;
+  return [resolvedBlobRequests, container];
 };
 
 export const fetchAudioBlobs = async (
   blobServiceClient: BlobServiceClient
 ): Promise<[Blob[], Container[]]> => {
-  const newContainers: Container[] = [];
-
   const containerRequests = [];
   for await (const container of blobServiceClient.listContainers({
     prefix: "audio",
   })) {
     containerRequests.push(
-      handleContainerClient(container.name, blobServiceClient, newContainers)
+      handleContainerClient(container.name, blobServiceClient)
     );
   }
 
   const resolvedContainerRequests = await Promise.all(containerRequests);
 
-  return [resolvedContainerRequests.flat(), newContainers];
+  return [
+    resolvedContainerRequests.map((el) => el[0]).flat(),
+    resolvedContainerRequests.map((el) => el[1]).flat(),
+  ];
+};
+
+export const fetchContainerAudioBlobData = async (
+  containerName: string = "audio-processed",
+  blobServiceClient: BlobServiceClient
+): Promise<[Blob[], Container]> => {
+  return await handleContainerClient(containerName, blobServiceClient);
 };
