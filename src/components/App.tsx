@@ -1,5 +1,5 @@
 import "styles/App.css";
-import { BlobServiceClient } from "@azure/storage-blob";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import { useEffect, useRef, useState } from "react";
 import { IGroup, Panel, Stack } from "@fluentui/react";
 import AudioPlayer from "./AudioPlayer";
@@ -14,33 +14,32 @@ import SideBar from "./SideBar/SideBar";
 import ConnectionStringBar from "./ConnectionStringBar";
 import { Blob, Container, fetchAudioBlobs, getJsonData } from "utils/blobData";
 
-export type LoadingStatus = "loading" | "successful" | "failed";
+export type LoadingStatus = "pending" | "loading" | "successful" | "failed";
 
 function App() {
   const [containers, setContainers] = useState<Array<Container>>([]);
   const [blobs, setBlobs] = useState<Array<Blob>>([]);
   const [blobsLoadingStatus, setBlobsLoadingStatus] =
-    useState<LoadingStatus>("loading");
+    useState<LoadingStatus>("pending");
   const [groups, setGroups] = useState<Array<IGroup>>([]);
 
   const [audioUrl, setAudioUrl] = useState("");
   const [transcript, setTranscript] = useState<Transcript>([]);
   const [transcriptLoadingStatus, setTranscriptLoadingStatus] =
-    useState<LoadingStatus>("loading");
+    useState<LoadingStatus>("pending");
 
-  const [blobServiceSas, setBlobServiceSas] = useState<string>(
-    (process.env.REACT_APP_BLOB_SERVICE_SAS as string) || ""
-  );
+  const [blobServiceSas, setBlobServiceSas] = useState<string>("");
 
-  const blobServiceClientRef = useRef(new BlobServiceClient(blobServiceSas));
-  const jsonResultOutputContainerClientRef = useRef(
-    blobServiceClientRef.current.getContainerClient("json-result-output")
-  );
+  const blobServiceClientRef = useRef<BlobServiceClient>();
+  const jsonResultOutputContainerClientRef = useRef<ContainerClient>();
 
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] =
     useBoolean(false);
 
   const getJsonResultOutput = async (audioFileName: string) => {
+    if (!jsonResultOutputContainerClientRef.current) {
+      return Promise.reject();
+    }
     const blobClient = jsonResultOutputContainerClientRef.current.getBlobClient(
       `${audioFileName}.json`
     );
@@ -48,11 +47,29 @@ function App() {
   };
 
   useEffect(() => {
-    blobServiceClientRef.current = new BlobServiceClient(blobServiceSas);
+    if (!blobServiceSas) {
+      return;
+    }
+    try {
+      blobServiceClientRef.current =
+        BlobServiceClient.fromConnectionString(blobServiceSas);
+    } catch (error) {
+      console.log(error);
+      setBlobsLoadingStatus("failed");
+      return;
+    }
+
+    if (!blobServiceClientRef.current) {
+      return;
+    }
+
     jsonResultOutputContainerClientRef.current =
       blobServiceClientRef.current.getContainerClient("json-result-output");
 
     const setAudioBlobs = async () => {
+      if (!blobServiceClientRef.current) {
+        return;
+      }
       setBlobsLoadingStatus("loading");
       try {
         const [newBlobs, newContainers] = await fetchAudioBlobs(

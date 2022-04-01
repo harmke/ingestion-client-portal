@@ -34,7 +34,9 @@ function ConnectionStringBar({
   );
   return (
     <div className="ConnectionStringBar">
-      <Label className="ConnectionStringBar__Label">SAS String: </Label>
+      <Label className="ConnectionStringBar__Label">
+        SAS Connection String:{" "}
+      </Label>
       <TextField
         className="ConnectionStringBar__TextField"
         styles={textFieldStyles}
