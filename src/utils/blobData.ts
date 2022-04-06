@@ -1,9 +1,4 @@
-import {
-  BlobClient,
-  BlobItem,
-  BlobServiceClient,
-  ContainerClient,
-} from "@azure/storage-blob";
+import { BlobClient, BlobItem, ContainerClient } from "@azure/storage-blob";
 import getBlobDuration from "get-blob-duration";
 import { convertMilliseconds } from "./transcription";
 
