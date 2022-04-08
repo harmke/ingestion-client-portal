@@ -1,7 +1,7 @@
 import "styles/App.css";
 import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import { useEffect, useRef, useState } from "react";
-import { DefaultButton, Panel, Stack } from "@fluentui/react";
+import { DefaultButton, Panel } from "@fluentui/react";
 import AudioPlayer from "./AudioPlayer";
 import { generateTranscript, Transcript } from "../utils/transcription";
 import { useBoolean } from "@fluentui/react-hooks";
@@ -66,7 +66,7 @@ function App() {
     paginatedAudioRef.current = new PaginatedAudio(
       blobServiceClientRef.current,
       "audio-processed",
-      10
+      5
     );
 
     jsonResultOutputContainerClientRef.current =
@@ -114,43 +114,43 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar />
-      <Stack horizontal>
-        <Stack.Item>
-          <SideBar />
-        </Stack.Item>
-        <Stack.Item grow>
-          <ConnectionStringBar
-            blobServiceSas={blobServiceSas}
-            onConnect={setBlobServiceSas}
-          />
-          <OptionsBar />
-          <FilterBar />
-
-          <FilesExplorer
-            showAudioPlayer={showAudioPlayer}
-            blobs={blobs}
-            loadingStatus={blobsLoadingStatus}
-          />
-          <div className="PaginationButton__Container">
-            <DefaultButton text="load more" onClick={loadNextAudioBlobPage} />
-          </div>
-        </Stack.Item>
-      </Stack>
-
-      <Panel
-        isLightDismiss
-        isOpen={isOpen}
-        onDismiss={dismissPanel}
-        closeButtonAriaLabel="Close"
-        headerText="Audio Player"
-      >
-        <AudioPlayer
-          src={audioUrl}
-          transcript={transcript}
-          transcriptLoadingStatus={transcriptLoadingStatus}
+      <div className="App__NavBar">
+        <NavBar />
+      </div>
+      <div className="App__SideBar">
+        <SideBar />
+      </div>
+      <div className="App__MainBody">
+        <ConnectionStringBar
+          blobServiceSas={blobServiceSas}
+          onConnect={setBlobServiceSas}
         />
-      </Panel>
+        <OptionsBar />
+        <FilterBar />
+
+        <FilesExplorer
+          showAudioPlayer={showAudioPlayer}
+          blobs={blobs}
+          loadingStatus={blobsLoadingStatus}
+        />
+        <div className="PaginationButton__Container">
+          <DefaultButton text="load more" onClick={loadNextAudioBlobPage} />
+        </div>
+
+        <Panel
+          isLightDismiss
+          isOpen={isOpen}
+          onDismiss={dismissPanel}
+          closeButtonAriaLabel="Close"
+          headerText="Audio Player"
+        >
+          <AudioPlayer
+            src={audioUrl}
+            transcript={transcript}
+            transcriptLoadingStatus={transcriptLoadingStatus}
+          />
+        </Panel>
+      </div>
     </div>
   );
 }

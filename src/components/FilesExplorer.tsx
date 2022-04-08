@@ -115,11 +115,11 @@ function FilesExplorer({
   return (
     <ShimmeredDetailsList
       enableShimmer={loadingStatus === "loading"}
+      shimmerLines={blobs.length}
       compact
       checkboxVisibility={CheckboxVisibility.hidden}
       items={blobs}
       columns={columns}
-      // groups={groups}
       groupProps={{
         showEmptyGroups: true,
       }}

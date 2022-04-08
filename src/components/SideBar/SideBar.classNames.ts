@@ -14,7 +14,7 @@ export interface SideBarClassNames {
 export const getClassNames = (): SideBarClassNames => {
   return mergeStyleSets({
     root: {
-      width: "240px",
+      width: "100%",
       height: "100%",
       borderRight: `1px solid ${theme.palette.neutralSecondary}`,
       backgroundColor: theme.palette.neutralLighterAlt,
