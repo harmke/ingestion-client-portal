@@ -58,7 +58,7 @@ export function generateTranscript(
       duration: parseInt(durationInTicks) / 10000,
       recognitionStatus,
       text: nBest[0]?.display,
-      speaker: speaker || channel || 0,
+      speaker: speaker || (channel || 0) + 1,
       words: nBest[0]?.words.map(
         ({ word, durationInTicks, offsetInTicks }) => ({
           text: word,
