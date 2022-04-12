@@ -56,23 +56,26 @@ function TranscriptView({
                 Speaker {phrase.speaker}
               </span>
             </div>
-            {/* {phrase.text} */}
             <div>
-              {phrase.words.map((word) => (
-                <span
-                  key={`${word.offset}-${word.text}`}
-                  className="TranscriptView__Word"
-                  style={{
-                    textDecoration: isActive(word) ? "underline" : undefined,
-                  }}
-                  onClick={(event) => {
-                    onSetTime(word);
-                    event.stopPropagation();
-                  }}
-                >
-                  {word.text}{" "}
-                </span>
-              ))}
+              {!phrase.words
+                ? phrase.text
+                : phrase.words.map((word) => (
+                    <span
+                      key={`${word.offset}-${word.text}`}
+                      className="TranscriptView__Word"
+                      style={{
+                        textDecoration: isActive(word)
+                          ? "underline"
+                          : undefined,
+                      }}
+                      onClick={(event) => {
+                        onSetTime(word);
+                        event.stopPropagation();
+                      }}
+                    >
+                      {word.text}{" "}
+                    </span>
+                  ))}
             </div>
           </div>
         ))

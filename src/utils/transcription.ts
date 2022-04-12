@@ -6,7 +6,7 @@ export interface RecognizedPhrase {
   speaker?: number;
   nBest: {
     display: string;
-    words: {
+    words?: {
       word: string;
       offsetInTicks: string;
       durationInTicks: string;
@@ -29,7 +29,7 @@ export interface Word extends Segment {}
 export interface Phrase extends Segment {
   recognitionStatus: string;
   speaker: number;
-  words: Word[];
+  words?: Word[];
 }
 
 export interface Transcript extends Array<Phrase> {}
@@ -59,7 +59,7 @@ export function generateTranscript(
       recognitionStatus,
       text: nBest[0]?.display,
       speaker: speaker || (channel || 0) + 1,
-      words: nBest[0]?.words.map(
+      words: nBest[0]?.words?.map(
         ({ word, durationInTicks, offsetInTicks }) => ({
           text: word,
           duration: parseInt(durationInTicks) / 10000,
