@@ -24,12 +24,10 @@ export interface Segment {
   duration: number;
 }
 
-export interface Word extends Segment {}
-
 export interface Phrase extends Segment {
   recognitionStatus: string;
   speaker: number;
-  words?: Word[];
+  words?: Segment[];
 }
 
 export interface Transcript extends Array<Phrase> {}
