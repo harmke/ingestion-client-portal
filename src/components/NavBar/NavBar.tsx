@@ -1,5 +1,5 @@
 import { IconButton, Persona } from "@fluentui/react";
-import logo from "IAP_logo_69x48.png";
+import logo from "assets/IAP_logo_69x48.png";
 import { getClassNames } from "./NavBar.classNames";
 
 function NavBar() {
