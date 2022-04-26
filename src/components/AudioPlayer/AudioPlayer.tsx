@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { Segment, Transcript } from "utils/transcription";
-import TranscriptView from "./TranscriptView";
-import "styles/AudioPlayer.css";
-import { LoadingStatus } from "./App";
+import TranscriptView from "components/TranscriptView/TranscriptView";
+import { LoadingStatus } from "components/App/App";
+import { getClassNames } from "./AudioPlayer.classNames";
 
 interface AudioPlayerProps {
   src: string;
@@ -15,6 +15,8 @@ function AudioPlayer({
   transcript,
   transcriptLoadingStatus,
 }: AudioPlayerProps) {
+  const classNames = getClassNames();
+
   const audioRef = useRef<HTMLAudioElement>(null);
   const [currentSeconds, setCurrentSeconds] = useState(0);
 
@@ -40,7 +42,7 @@ function AudioPlayer({
         onContextMenu={(e) => e.preventDefault()}
         onTimeUpdate={handleTimeUpdate}
         src={src}
-        className="AudioPlayerAudioElement"
+        className={classNames.audioPlayer}
       >
         Your browser does not support the audio element
       </audio>

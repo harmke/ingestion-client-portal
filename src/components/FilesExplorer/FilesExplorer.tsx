@@ -9,9 +9,9 @@ import {
   IDetailsRowStyles,
   ShimmeredDetailsList,
 } from "@fluentui/react";
-import "styles/FilesExplorer.css";
 import { Blob } from "utils/blobData";
-import { LoadingStatus } from "./App";
+import { LoadingStatus } from "components/App/App";
+import { getClassNames } from "./FilesExplorer.classNames";
 
 interface FilesExplorerProps {
   showAudioPlayer: (item: Blob) => void;
@@ -25,6 +25,7 @@ function FilesExplorer({
   loadingStatus,
 }: FilesExplorerProps) {
   const theme = getTheme();
+  const classNames = getClassNames();
 
   const columns: IColumn[] = [
     {
@@ -35,7 +36,7 @@ function FilesExplorer({
       name: "Play Audio",
       iconName: "Play",
       isIconOnly: true,
-      headerClassName: "IconHeaderCell",
+      headerClassName: classNames.iconHeaderCell,
 
       onRender: function Render(item: Blob) {
         return (
@@ -46,13 +47,11 @@ function FilesExplorer({
                 fontWeight: 900,
               },
               icon: {
-                // fontWeight: item === selectedInteraction ? 900 : "normal",
                 fontWeight: "normal",
               },
             }}
             onClick={() => {
               showAudioPlayer(item);
-              // setSelectedInteraction(item);
             }}
           />
         );
@@ -66,7 +65,7 @@ function FilesExplorer({
       name: "File Types",
       iconName: "Media",
       isIconOnly: true,
-      headerClassName: "IconHeaderCell",
+      headerClassName: classNames.iconHeaderCell,
 
       onRender: function Render(item: Blob) {
         return (

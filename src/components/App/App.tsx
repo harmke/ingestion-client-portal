@@ -1,21 +1,23 @@
-import "styles/App.css";
+import { getClassNames } from "./App.classNames";
 import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import { useEffect, useRef, useState } from "react";
 import { DefaultButton, Panel } from "@fluentui/react";
-import AudioPlayer from "./AudioPlayer";
-import { generateTranscript, Transcript } from "../utils/transcription";
+import AudioPlayer from "components/AudioPlayer/AudioPlayer";
+import { generateTranscript, Transcript } from "utils/transcription";
 import { useBoolean } from "@fluentui/react-hooks";
 
-import FilesExplorer from "./FilesExplorer";
-import NavBar from "./NavBar/NavBar";
-import FilterBar from "./FilterBar";
-import OptionsBar from "./OptionsBar";
-import SideBar from "./SideBar/SideBar";
-import ConnectionStringBar from "./ConnectionStringBar";
+import FilesExplorer from "components/FilesExplorer/FilesExplorer";
+import NavBar from "components/NavBar/NavBar";
+import FilterBar from "components/FilterBar/FilterBar";
+import OptionsBar from "components/OptionsBar/OptionsBar";
+import SideBar from "components/SideBar/SideBar";
+import ConnectionStringBar from "components/ConnectionStringBar/ConnectionStringBar";
 import { Blob, getJsonData } from "utils/blobData";
 import PaginatedAudio from "utils/audioPagination";
 
 export type LoadingStatus = "pending" | "loading" | "successful" | "failed";
+
+const classNames = getClassNames();
 
 function App() {
   const [blobs, setBlobs] = useState<Array<Blob>>([]);
@@ -113,14 +115,14 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div className="App__NavBar">
+    <div className={classNames.root}>
+      <div className={classNames.navBar}>
         <NavBar />
       </div>
-      <div className="App__SideBar">
+      <div className={classNames.sideBar}>
         <SideBar />
       </div>
-      <div className="App__MainBody">
+      <div className={classNames.mainBody}>
         <ConnectionStringBar
           blobServiceSas={blobServiceSas}
           onConnect={setBlobServiceSas}
@@ -133,7 +135,7 @@ function App() {
           blobs={blobs}
           loadingStatus={blobsLoadingStatus}
         />
-        <div className="PaginationButton__Container">
+        <div className={classNames.paginationContainer}>
           <DefaultButton text="load more" onClick={loadNextAudioBlobPage} />
         </div>
 

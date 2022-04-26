@@ -1,12 +1,6 @@
-import {
-  ITextFieldStyles,
-  Label,
-  PrimaryButton,
-  Text,
-  TextField,
-} from "@fluentui/react";
+import { Label, PrimaryButton, TextField } from "@fluentui/react";
 import { useCallback, useState } from "react";
-import "styles/ConnectionStringBar.css";
+import { getClassNames } from "./ConnectionStringBar.classNames";
 
 interface ConnectionStringBarProps {
   blobServiceSas: string;
@@ -17,11 +11,8 @@ function ConnectionStringBar({
   blobServiceSas,
   onConnect,
 }: ConnectionStringBarProps) {
+  const classNames = getClassNames();
   const [sasValue, setSasValue] = useState<string>("");
-
-  const textFieldStyles: Partial<ITextFieldStyles> = {
-    // fieldGroup: { width: 300 },
-  };
 
   const handleTextFieldChange = useCallback(
     (
@@ -33,13 +24,10 @@ function ConnectionStringBar({
     []
   );
   return (
-    <div className="ConnectionStringBar">
-      <Label className="ConnectionStringBar__Label">
-        SAS Connection String:{" "}
-      </Label>
+    <div className={classNames.root}>
+      <Label className={classNames.label}>SAS Connection String: </Label>
       <TextField
-        className="ConnectionStringBar__TextField"
-        styles={textFieldStyles}
+        className={classNames.textField}
         value={sasValue}
         placeholder={blobServiceSas}
         onChange={handleTextFieldChange}

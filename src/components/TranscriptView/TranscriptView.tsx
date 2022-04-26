@@ -1,11 +1,7 @@
 import { getTheme, Spinner, SpinnerSize } from "@fluentui/react";
-import {
-  convertMilliseconds,
-  Segment,
-  Transcript,
-} from "../utils/transcription";
-import "styles/TranscriptView.css";
-import { LoadingStatus } from "./App";
+import { convertMilliseconds, Segment, Transcript } from "utils/transcription";
+import { LoadingStatus } from "components/App/App";
+import { getClassNames } from "./TranscriptView.classNames";
 
 interface TranscriptProps {
   transcript: Transcript;
@@ -21,9 +17,9 @@ function TranscriptView({
   onSetTime,
 }: TranscriptProps) {
   const theme = getTheme();
+  const classNames = getClassNames();
 
   const isActive = (segment: Segment) => {
-    // if (interaction.transcriptAudioURI === '') return '';
     const offsetSecs = segment.offset / 1000;
     const endSecs = offsetSecs + segment.duration / 1000;
     return currentSeconds >= offsetSecs && currentSeconds < endSecs;
@@ -47,12 +43,12 @@ function TranscriptView({
             onClick={() => {
               onSetTime(phrase);
             }}
-            className="TranscriptViewSegmentContainer"
+            className={classNames.segmentContainer}
           >
-            <div className="TranscriptViewSegmentTimestamp">
+            <div className={classNames.segmentTimestamp}>
               {convertMilliseconds(phrase.offset)} -{" "}
               {convertMilliseconds(phrase.offset + phrase.duration)}
-              <span className="TranscriptViewSegment__SpeakerTag">
+              <span className={classNames.segmentSpeakerTag}>
                 Speaker {phrase.speaker}
               </span>
             </div>
@@ -62,7 +58,7 @@ function TranscriptView({
                 : phrase.words.map((word) => (
                     <span
                       key={`${word.offset}-${word.text}`}
-                      className="TranscriptView__Word"
+                      className={classNames.word}
                       style={{
                         textDecoration: isActive(word)
                           ? "underline"
