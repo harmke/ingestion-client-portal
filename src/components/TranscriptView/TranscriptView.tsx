@@ -8,6 +8,7 @@ interface TranscriptProps {
   loadingStatus: LoadingStatus;
   currentSeconds: number;
   onSetTime: (segment: Segment) => void;
+  fullTranscriptObject: {};
 }
 
 function TranscriptView({
@@ -15,6 +16,7 @@ function TranscriptView({
   loadingStatus,
   currentSeconds,
   onSetTime,
+  fullTranscriptObject
 }: TranscriptProps) {
   const theme = getTheme();
   const classNames = getClassNames();
@@ -25,8 +27,11 @@ function TranscriptView({
     return currentSeconds >= offsetSecs && currentSeconds < endSecs;
   };
 
+  // console.log(fullTranscriptObject)
+
   return (
-    <div>
+
+    <div className={'transcriptPane'}>
       {loadingStatus === "loading" ? (
         <>
           <Spinner size={SpinnerSize.large} />

@@ -14,3 +14,106 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.audioPlayerStyle{
+  align-items: center;
+}
+
+.bigblue {
+  color: #000000;
+  padding: 10px;
+  text-align:left;
+  font-size: small;
+  background-color:#ebf3fa;
+}
+
+.summarization {
+  color: #000000;
+  padding: 10px;
+  text-align:left;
+  font-size: small;
+  background-color:#ebf3fa;
+  text-align: justify;
+
+}
+
+.verticalStyle{
+  height: '200px';
+}
+
+.askMoreBox{
+  color: #000000;
+  padding: 10px;
+  text-align:left;
+  font-size: small;
+  background-color:#ebf3fa;
+  align-items:'center';
+  min-width: 48%;
+}
+
+.interogation {
+  color: #000000;
+  padding: 10px;
+  text-align:left;
+  font-size: medium;
+  background-color:#ebf3fa;
+}
+
+.leftHandPanel{
+  min-width: 30%;
+  width:25%;
+  margin-top: 10px;
+  margin-right: 10px;
+
+}
+
+.middlePanel{
+  min-width: 35%;
+  margin-top: 10px;
+
+}
+
+.middlePanel .oaiinsightsRightPanel{
+  background-color:#e6eaec;
+  margin-left: 10px;
+  margin-right: 10px;
+
+}
+
+
+
+.rightHandPanel{
+  margin-top: 10px;
+
+}
+
+.relatedConv{
+  border: '1px solid';
+  font-size: medium;
+  background-color:#ebf3fa;
+  margin-right: 10px;
+  margin-left: 10px;
+  color: #33363c;
+  text-align: center;
+
+
+}
+
+.relatedConv .filename{
+  font-size:large;
+  margin-bottom: 5px;
+  text-align: center;
+
+}
+.relatedConv .timestamp{
+  font-size:small;
+  margin-bottom: 5px;
+}
+.relatedConv .related{
+  font-size:large;
+}
+.relatedConv .summary{
+  font-size: small;
+  text-align: justify;
+
+}

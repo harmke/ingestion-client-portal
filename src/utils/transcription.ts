@@ -30,6 +30,27 @@ export interface Phrase extends Segment {
   words?: Segment[];
 }
 
+type relatedConvType = {
+  "id": string;
+  "text": string;
+  "summary": string;
+  "timestamp": string;
+  "score":number;
+  "conversation": string;
+}
+
+export interface OpenAiDictionary {
+  summary: string;
+  sentiment: string;
+  topic: string[];
+  category: string;
+  key_items: string[];
+  ner: string[];
+  conversation: string;
+  related: relatedConvType[];
+
+}
+
 export interface Transcript extends Array<Phrase> {}
 
 export const convertMilliseconds = (milli: number) => {
@@ -42,7 +63,7 @@ export const convertMilliseconds = (milli: number) => {
 
 export function generateTranscript(
   jsonResultOutput: JsonResultOutput
-): Transcript {
+): Transcript  {
   const unsorted = jsonResultOutput.recognizedPhrases.map(
     ({
       offsetInTicks,
