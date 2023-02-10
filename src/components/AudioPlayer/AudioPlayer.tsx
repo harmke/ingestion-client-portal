@@ -97,19 +97,15 @@ function AudioPlayer({
   const [updated, setUpdated] = useState(message);
 
 
-  const handleClick = () => {
+  const handleClick = async () => {
     // "message" stores input field value
     setUpdated(message);
     console.log("Final Message", message);
 
     var prompt = "Please answer the question from the below text \n###" + fullTranscriptObject.conversation + "\n###\n" + message + "\nAnswer:";
 
-    useEffect(() => {
-      (async function () {
-        const { text } = await( await fetch(`/api/message`)).json();
-        console.log(data)
-      })();
-    });
+    const { text } = await( await fetch(`/api/QueryOpenAI`)).json();
+    console.log(text)
 
     var data = callOpenAI(prompt);
     
