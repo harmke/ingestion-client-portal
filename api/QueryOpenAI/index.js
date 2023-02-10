@@ -1,4 +1,4 @@
-const { AzureFunction, Context, HttpRequest } = require("@azure/functions")
+import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 
 // import fetch from "node-fetch"
 // const fetch = require("node-fetch");
@@ -40,4 +40,4 @@ const httpTrigger = async function (context, req) {
     }
 };
 
-module.exports = httpTrigger;
+export default httpTrigger;
