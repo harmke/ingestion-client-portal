@@ -25,7 +25,7 @@ module.exports = async function (context, req) {
 
   } catch (error) {
       context.res.json({
-      error: error
+      error: error.toString()
   });
   }
 };
