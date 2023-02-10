@@ -29,12 +29,12 @@ module.exports = async function (context, req) {
         })
 
         const result = await response.json()
-        context.res = result
+        context.res.json(result)
 
     } catch (error) {
-        context.res = {
+        context.res.json({
             error: error.toString()
-        };
+        });
     }
 
 
