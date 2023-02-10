@@ -9,7 +9,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const deployment_name = process.env.DEPLOYMENT_NAME;
     const url = base_url + "/openai/deployments/" + deployment_name + "/completions?api-version=2022-12-01";
 
-    let output = '';
+    // let output = '';
     const response = await fetch(url, {
     method: "POST",
     headers: {
@@ -36,7 +36,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     // });
 
 
-    context.res.json(response.json());
+    context.res.json(await response.json());
 
     // context.res.json({
     //     text: url
