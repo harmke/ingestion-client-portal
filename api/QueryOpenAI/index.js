@@ -1,4 +1,4 @@
-import { AzureFunction, Context, HttpRequest } from "@azure/functions";
+// import { AzureFunction, Context, HttpRequest } from "@azure/functions";
 
 // import fetch from "node-fetch"
 // const fetch = require("node-fetch");
