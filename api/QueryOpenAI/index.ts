@@ -1,4 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
+import fetch from "node-fetch";
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
@@ -20,17 +21,15 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         body: JSON.stringify({
             "temperature": 0,
             "max_tokens":600,
-            "prompt" : "say test"
+            "prompt" : prompt
             })
         })
 
         const result = await response.json()
-        context.res.json("result")
+        context.res.json(result)
     } catch (error) {
         context.res.json({
-        error: error,
-        url: url,
-        api_key: api_key
+        error: error
     });
     }
 };
