@@ -1,49 +1,12 @@
-import { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Segment, Transcript, OpenAiDictionary } from "utils/transcription";
 import TranscriptView from "components/TranscriptView/TranscriptView";
 import { LoadingStatus } from "components/App/App";
 import { getClassNames } from "./AudioPlayer.classNames";
-import { createTheme, DefaultButton, HoverCard, HoverCardType, IHoverCard, IIconStyles, IPlainCardProps, IScrollablePaneStyles, ITheme, PrimaryButton, ScrollablePane, Separator, Stack, Sticky, StickyPositionType, TextField } from "@fluentui/react";
+import { createTheme, DefaultButton, IIconStyles, ITheme, PrimaryButton, Separator, Stack, TextField } from "@fluentui/react";
 import { IStackTokens } from '@fluentui/react/lib/Stack';
 import { Text } from '@fluentui/react/lib/Text';
 import { useBoolean } from '@fluentui/react-hooks';
-import { mergeStyles } from '@fluentui/react/lib/Styling';
-import React from "react";
-import { getTheme, mergeStyleSets } from '@fluentui/react/lib/Styling';
-
-interface IScrollablePaneExampleItem {
-  color: string;
-  text: string;
-  index: number;
-}
-const theme = getTheme();
-const ScrollBarclassNames = mergeStyleSets({
-  wrapper: {
-    height: '40vh',
-    position: 'relative',
-    maxHeight: 'inherit',
-  },
-  pane: {
-    maxWidth: 400,
-    border: '1px solid ' + theme.palette.neutralLight,
-  },
-  sticky: {
-    color: theme.palette.neutralDark,
-    padding: '5px 20px 5px 10px',
-    fontSize: '13px',
-    borderTop: '1px solid ' + theme.palette.black,
-    borderBottom: '1px solid ' + theme.palette.black,
-  },
-  textContent: {
-    padding: '15px 10px',
-  },
-});
-const scrollablePaneStyles: Partial<IScrollablePaneStyles> = { root: ScrollBarclassNames.pane };
-const colors = ['#eaeaea', '#dadada', '#d0d0d0', '#c8c8c8', '#a6a6a6', '#c7e0f4', '#71afe5', '#eff6fc', '#deecf9'];
-
-
-
-
 
 interface AudioPlayerProps {
   src: string; 
@@ -80,15 +43,11 @@ function AudioPlayer({
 
   const callOpenAI = async(prompt: string) => {
 
-    //const { config } = require('dotenv');
-    //config();
     try{
-
       const api_key = process.env.API_KEY;
       const base_url =  process.env.AOAI_ENDPOINT;
       const deployment_name = process.env.DEPLOYMENT_NAME;
       const url = base_url + "/openai/deployments/" + deployment_name + "/completions?api-version=2022-12-01";
-      
 
       const headers = {
         "api-key": api_key,
@@ -145,9 +104,24 @@ function AudioPlayer({
 
     var prompt = "Please answer the question from the below text \n###" + fullTranscriptObject.conversation + "\n###\n" + message + "\nAnswer:";
 
+    useEffect(() => {
+      (async function () {
+        const { text } = await( await fetch(`/api/message`)).json();
+        console.log(data)
+      })();
+    });
+
     var data = callOpenAI(prompt);
     
 
+  };
+
+
+  //let loadMoreInfo = useBoolean(false);
+  //let loadMoreInfo = false
+  const handleReadMoreClick = () => {
+    
+    //loadMoreInfo = true;
   };
 
   const stackTokens: IStackTokens = { childrenGap: 12 };
@@ -161,9 +135,6 @@ function AudioPlayer({
     },
   });
   
-  const verticalStyle = mergeStyles({
-    height: '200px',
-  });
 
   console.log("typeof", typeof(fullTranscriptObject.summary))
   console.log("my transcript", Object.keys(fullTranscriptObject).length !== 0, fullTranscriptObject)
@@ -186,8 +157,6 @@ function AudioPlayer({
   let key_items;
   let topics;
   let relatedConversations;
-  let hoverCardText: string;
-
   
   if (Object.keys(fullTranscriptObject).length !== 0)
   {
@@ -199,27 +168,22 @@ function AudioPlayer({
     relatedConversations = fullTranscriptObject.related.map((convers, i) => (
       //<div style= {relatedConvStyle}>
       <div className="relatedConv">
-        <span><tr key={i}>
-          <br/>
-          <div className="filename">
-            <b>
-              <span style={{ color: '#264ebb', fontSize:'large' }}>Top {i+1} </span>
-            <span style={{fontSize:'medium'}}>| {Math.round(convers.score* 100)}% 
-            <span>  </span>
-            <tr style={{fontSize:'small'}}>  Relevant</tr>
-            </span>
-            </b> <br/></div>
+        <span > <tr key={i}>
+        <br/>
+        <div className="filename"><b>Filename: </b> {convers.id}<br/></div>
+        <div className="timestamp"><b>Date: </b> {convers.timestamp}<br/></div>
+        <div className="related"><b> Conversation relevance(%): </b> {Math.round(convers.score* 100)}%<br/></div>
+        <div className="summary"><b>Conversation Summary: </b> {convers.summary}<br/></div></tr></span>
+        <DefaultButton text="Load more" style={{alignItems:'center'}} onClick={handleReadMoreClick}></DefaultButton>
+        
+        {/* { loadMoreInfo && (
+        
+            <div className="summary"><b>Conversation Summary: </b> {convers.summary}<br/></div>
 
-            
-            <span style={{fontSize:'small', textAlign: 'center'}}>{convers.id.replace(".json", "")}<br/></span>
+          )
+        } */}
 
-          <div className="timestamp"><b>Date: </b> {convers.timestamp}<br/></div>
-          <div className="summary"><b style={{fontSize:'medium'}}>Summary: <br/></b> {convers.summary}</div>
-          </tr></span>
-
-        <Stack tokens={stackTokens}>
-          <Separator theme={theme}></Separator>
-        </Stack>
+            <Separator theme={theme}></Separator><br/>
       </div>
 
   ))
@@ -275,89 +239,76 @@ function AudioPlayer({
   }
 
   return (
-      <div>
-        <div className="audioPlayerStyle">
-          <audio
-            ref={audioRef}
-            controls
-            autoPlay={transcriptLoadingStatus === "successful"}
-            controlsList="nodownload"
-            onContextMenu={(e) => e.preventDefault()}
-            onTimeUpdate={handleTimeUpdate}
-            src={src}
-            className={classNames.audioPlayer}
-          >
-            Your browser does not support the audio element
-          </audio>
-        </div>
-        <Stack horizontal horizontalAlign="space-evenly">
-          <div className={'summarization'} >
-            <h2 style={{textAlign: "center", color: '#264ebb'}}>Conversation Summary</h2>
-              {fullTranscriptObject.summary}
-              <br/>
-            <Separator theme={theme}></Separator>
-          </div>
-
-          <Stack.Item className={verticalStyle}>
-            <Separator vertical />
-          </Stack.Item>
-          
-          <div className={'askMoreBox'} >
-            <div><h2 style={{textAlign: "center", color: '#264ebb'}}> Find out more! Ask anything here:</h2></div>
-            <Stack horizontal horizontalAlign="space-evenly" style={{ display: "flex"}}>
-              <input name="openaiQuestion" style={{ width:"100%" }} placeholder="Type your question here..." onChange={handleChange} value={message}>
-              </input>
-              <DefaultButton text="Submit" onClick={handleClick}>Update</DefaultButton>
-            </Stack>
-            <Separator theme={theme}></Separator>
-            <div>
-              {check}
-            </div>
-          </div>
-        </Stack>
-
-        <Stack tokens={stackTokens}>
-          <Separator theme={theme}></Separator>
-        </Stack>
-
-        <Stack horizontal horizontalAlign="space-evenly">
-          <div style={{ display: "flex" , alignItems: 'left'}}>
-
-            <div className={'leftHandPanel'}>
-              <Stack><h2 style={{textAlign: "left", color: '#264ebb'}}>Transcription</h2></Stack>
-
-                <TranscriptView
-                  transcript={transcript}
-                  loadingStatus={transcriptLoadingStatus}
-                  currentSeconds={currentSeconds}
-                  fullTranscriptObject={fullTranscriptObject} onSetTime={function (segment: Segment): void {
-                    throw new Error("Function not implemented.");
-                  } }
-                />
-            </div>
-            <div className={'middlePanel'}>
-              <Stack><h2 style={{textAlign: "center", color: '#264ebb'}}>Call Highlights</h2></Stack>
-              <Stack className={'oaiinsightsRightPanel'}>
-                {oai}
-              </Stack>   
-            </div>
-            <div className={'rightHandPanel'}>
-              <Stack><h2 style={{textAlign: "center", color: '#264ebb', marginBlockStart: "0px", marginBlockEnd: "6px"}}>Top 5 most relevant<br/>conversations</h2></Stack>
-              <Stack> <div className="relatedConv">{relatedConversations}</div></Stack> 
-              
-            </div>
-          </div>
-          
-        
-        </Stack>
-      
-      
+    <div>
+      <audio 
+        ref={audioRef}
+        controls
+        autoPlay={transcriptLoadingStatus === "successful"}
+        controlsList="nodownload"
+        onContextMenu={(e) => e.preventDefault()}
+        onTimeUpdate={handleTimeUpdate}
+        src={src}
+        className={classNames.audioPlayer}
+      >
+        Your browser does not support the audio element
+      </audio>
+      <div className={'bigblue'}>
+      <h2 style={{textAlign: "center"}}>Conversation Summary</h2>
+        {fullTranscriptObject.summary}
+        <br/>
       </div>
+      <Separator theme={theme}></Separator>
+
+      <div className={'bigblue'} style= {{alignItems:'center'}}>
+        <div><h3> Find out more! Ask anything here:</h3></div>
+        <Stack horizontal horizontalAlign="space-evenly" style={{ display: "flex"}}>
+          <input name="openaiQuestion" style={{ width:"100%" }} placeholder="Type your question here..." onChange={handleChange} value={message}>
+          </input>
+          <DefaultButton text="Submit" onClick={handleClick}>Update</DefaultButton>
+        </Stack>
+        <Separator theme={theme}></Separator>
+        <div>
+          {check}
+        </div>
+      </div>
+      <Stack tokens={stackTokens}>
+        <Separator theme={theme}></Separator>
+      </Stack>
+
+      <Stack horizontal horizontalAlign="space-evenly">
+            <div style={{ display: "flex" , alignItems: 'left'}}>
+
+              <TranscriptView
+                transcript={transcript}
+                loadingStatus={transcriptLoadingStatus}
+                currentSeconds={currentSeconds}
+                fullTranscriptObject={fullTranscriptObject} onSetTime={function (segment: Segment): void {
+                  throw new Error("Function not implemented.");
+                } }
+              />
+              <div className={'middlePanel'}>
+                <Stack><h2 style={{textAlign: "center", color: '#264ebb'}}>Call Highlights</h2></Stack>
+                <Stack className={'oaiinsightsRightPanel'}>
+                  {oai}
+                  </Stack>   
+              </div>
+              <div>
+              <Stack><h2 style={{textAlign: "center", color: '#264ebb'}}>Explore more:</h2></Stack>
+              
+              <div className={'rightHandPanel'}>
+              <h3 style={{textAlign: "left", color: '#264ebb'}}>Top 5 most relevant conversations:</h3>
+                <div className="relatedConv">{relatedConversations}</div>
+                <Separator theme={theme}></Separator>
+                </div>
+              </div>
+            </div>
+            
+      
+    </Stack>
+      
+      
+    </div>
   );
 }
 
 export default AudioPlayer;
-function moment(arg0: Date) {
-  throw new Error("Function not implemented.");
-}
-
