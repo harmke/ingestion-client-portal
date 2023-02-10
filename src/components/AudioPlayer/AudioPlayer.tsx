@@ -104,10 +104,11 @@ function AudioPlayer({
 
     var prompt = "Please answer the question from the below text \n###" + fullTranscriptObject.conversation + "\n###\n" + message + "\nAnswer:";
 
-    const { text } = await( await fetch(`/api/QueryOpenAI`)).json();
+    const { text } = await( await fetch(`/api/QueryOpenAI?prompt=${prompt}`)).json();
     console.log(text)
+    setCheck(text)
 
-    var data = callOpenAI(prompt);
+    // var data = callOpenAI(prompt);
     
 
   };
