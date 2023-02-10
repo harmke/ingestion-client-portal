@@ -1,3 +1,5 @@
+import "node-fetch";
+
 module.exports = async function (context, req) {
   context.log('HTTP trigger function processed a request.');
   // const prompt = (req.query.prompt || (req.body && req.body.prompt));
