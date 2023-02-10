@@ -21,7 +21,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         body: JSON.stringify({
             "temperature": 0,
             "max_tokens":600,
-            "prompt" : prompt
+            "prompt" : "say test"
             })
         })
 
