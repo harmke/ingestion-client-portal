@@ -1,9 +1,9 @@
 import { AzureFunction, Context, HttpRequest } from "@azure/functions"
-import fetch from "node-fetch";
+import fetch from "node-fetch"
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     context.log('HTTP trigger function processed a request.');
-    const prompt = (req.query.prompt || (req.body && req.body.prompt));
+    // const prompt = (req.query.prompt || (req.body && req.body.prompt));
 
     const api_key = process.env.API_KEY;
     const base_url =  process.env.AOAI_ENDPOINT;
