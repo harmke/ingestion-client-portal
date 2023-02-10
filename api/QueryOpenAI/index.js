@@ -29,7 +29,12 @@ module.exports = async function (context, req) {
         })
 
         const result = await response.json()
-        context.res.json(result)
+        const text = result.choices[0].text
+        context.res = {
+                // status: 200, /* Defaults to 200 */
+            body: text
+        };
+        // context.res.json(result)
 
     } catch (error) {
         context.res.json({
