@@ -23,6 +23,7 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         env:
           CI: false
+          AOAI_ENDPOINT: "https://sam-openai-rs.openai.azure.com"
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_YELLOW_COAST_034730E03 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
