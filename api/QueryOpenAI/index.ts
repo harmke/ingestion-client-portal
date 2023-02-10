@@ -28,7 +28,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         context.res.json("result")
     } catch (error) {
         context.res.json({
-        error: error
+        error: error,
+        url: url,
+        api_key: api_key
     });
         // context.res.json(JSON.parse(JSON.stringify(error)))
     }
